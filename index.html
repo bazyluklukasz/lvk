@@ -24,6 +24,7 @@
       html {
         scroll-behavior: smooth;
         overflow-x: hidden;
+        overscroll-behavior-x: none;
       }
 
       body {
@@ -31,6 +32,8 @@
         max-width: 100vw;
         margin: 0;
         overflow-x: hidden;
+        overscroll-behavior-x: none;
+        touch-action: pan-y;
         background: var(--paper);
         color: var(--ink);
         font-family: "Helvetica Neue", Arial, sans-serif;
@@ -187,6 +190,7 @@
         overflow-y: hidden;
         scrollbar-width: none;
         text-transform: uppercase;
+        touch-action: pan-x pan-y;
       }
 
       .nav::-webkit-scrollbar {
@@ -986,11 +990,22 @@
           min-height: 44px;
           padding: 0 16px;
           font-size: 10px;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0;
+          overflow-x: hidden;
+          touch-action: pan-y;
         }
 
         .nav a {
+          justify-content: center;
           height: 44px;
+          min-width: 0;
+          padding: 0 6px;
+          border-bottom: 1px solid var(--line);
           white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .hero-content {
