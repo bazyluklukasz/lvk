@@ -167,47 +167,93 @@
         justify-self: end;
         display: flex;
         gap: 18px;
+        align-items: center;
         color: #4e4944;
         font-size: 11px;
         letter-spacing: 0.12em;
         text-transform: uppercase;
       }
 
+      .menu-toggle {
+        justify-self: start;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 42px;
+        border: 0;
+        background: transparent;
+        color: #4e4944;
+        cursor: pointer;
+        font: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .menu-toggle::before,
+      .menu-toggle::after {
+        display: block;
+        width: 22px;
+        height: 1px;
+        background: currentColor;
+        content: "";
+        transition:
+          transform 180ms ease,
+          opacity 180ms ease;
+      }
+
+      .menu-toggle[aria-expanded="true"]::before {
+        transform: rotate(38deg) translate(4px, 4px);
+      }
+
+      .menu-toggle[aria-expanded="true"]::after {
+        transform: rotate(-38deg) translate(4px, -4px);
+      }
+
       .nav {
         position: sticky;
         top: 94px;
         z-index: 9;
-        display: flex;
-        justify-content: center;
-        gap: clamp(14px, 2.2vw, 34px);
-        min-height: 48px;
-        padding: 0 28px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1px;
+        max-height: 0;
+        padding: 0 48px;
         border-bottom: 1px solid var(--line);
-        background: #fff;
+        background: var(--line);
         font-size: 12px;
         letter-spacing: 0.13em;
-        overflow-x: auto;
-        overflow-y: hidden;
-        scrollbar-width: none;
+        overflow: hidden;
+        opacity: 0;
         text-transform: uppercase;
         touch-action: pan-x pan-y;
+        transition:
+          max-height 260ms ease,
+          opacity 180ms ease;
       }
 
-      .nav::-webkit-scrollbar {
-        display: none;
+      .nav.is-open {
+        max-height: 160px;
+        opacity: 1;
       }
 
       .nav a {
         flex: 0 0 auto;
         display: inline-flex;
         align-items: center;
-        height: 48px;
-        border-bottom: 2px solid transparent;
+        justify-content: center;
+        min-height: 58px;
+        padding: 0 14px;
+        border: 0;
+        background: #fff;
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .nav a:hover {
-        border-color: var(--gold);
+        background: var(--cream);
         color: var(--gold);
       }
 
@@ -893,16 +939,23 @@
         }
 
         .brand-row {
-          display: flex;
-          justify-content: center;
+          grid-template-columns: auto 1fr auto;
           min-height: 82px;
           padding: 0 20px;
         }
 
+        .brand {
+          grid-column: 2;
+        }
+
         .nav {
           top: 82px;
-          justify-content: flex-start;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
           padding: 0 18px;
+        }
+
+        .nav.is-open {
+          max-height: 260px;
         }
 
         .category-strip,
@@ -990,11 +1043,13 @@
           min-height: 44px;
           padding: 0 16px;
           font-size: 10px;
-          display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 0;
-          overflow-x: hidden;
           touch-action: pan-y;
+        }
+
+        .nav.is-open {
+          max-height: 360px;
         }
 
         .nav a {
@@ -1101,7 +1156,9 @@
     </div>
 
     <header class="brand-row">
-      <div></div>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
+        Menu
+      </button>
       <a class="brand" href="#top">LVK Diamenty <span>Natural Diamond Jewelry</span></a>
       <div class="utility">
         <a href="#kontakt">Umów wizytę</a>
@@ -1109,7 +1166,7 @@
       </div>
     </header>
 
-    <nav class="nav" aria-label="Główna nawigacja">
+    <nav class="nav" id="site-menu" aria-label="Główna nawigacja">
       <a href="#kolekcje">High Jewelry</a>
       <a href="#unikatowe">Unikatowe</a>
       <a href="#powtarzalne">Klasyczne</a>
@@ -1530,5 +1587,24 @@
       </div>
       <a href="#top">Powrót na górę</a>
     </footer>
+
+    <script>
+      const menuToggle = document.querySelector(".menu-toggle");
+      const siteMenu = document.querySelector("#site-menu");
+      const menuLinks = siteMenu.querySelectorAll("a");
+
+      menuToggle.addEventListener("click", () => {
+        const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
+        menuToggle.setAttribute("aria-expanded", String(!isOpen));
+        siteMenu.classList.toggle("is-open", !isOpen);
+      });
+
+      menuLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          menuToggle.setAttribute("aria-expanded", "false");
+          siteMenu.classList.remove("is-open");
+        });
+      });
+    </script>
   </body>
 </html>
